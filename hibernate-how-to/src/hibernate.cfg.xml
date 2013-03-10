@@ -47,6 +47,7 @@
 		<mapping class="com.encode.borg.beans.AppUpdate"/>
 		<mapping class="com.encode.borg.beans.Person"/>
 		<mapping class="com.encode.borg.beans.PersonJob"/>
+		<mapping class="com.encode.borg.beans.PersonRelative"/>
 		
     </session-factory>
 </hibernate-configuration>

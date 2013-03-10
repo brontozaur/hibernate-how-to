@@ -31,11 +31,16 @@ public class HibernateUtil {
 		return getSessionFactory().openSession();
 	}
 
-	public static Query getQuery(String queryName) {
-		return getSession().getNamedQuery(queryName);
+	public static Query getQuery(Session session, String queryName) {
+		return session.getNamedQuery(queryName);
+	}
+
+	public static void shutdown() {
+		getSessionFactory().close();
 	}
 
 	public static void prepareDatabase() {
 		getSessionFactory();
 	}
+
 }
