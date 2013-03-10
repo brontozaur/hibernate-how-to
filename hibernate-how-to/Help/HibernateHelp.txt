@@ -102,6 +102,8 @@ http://www.mkyong.com/hibernate/hibernate-save-image-into-database/
 http://stackoverflow.com/questions/4253512/creating-16-or-32-bit-image-from-byte-array
 http://www.java2s.com/Tutorial/Java/0280__SWT/CreateImagefrombytearray.htm
 http://ndpsoftware.com/HibernateMappingCheatSheet.html
+https://community.jboss.org/wiki/Non-transactionaldataaccessandtheauto-commitmode
+https://community.jboss.org/wiki/OpenSessionInView
 
 11. How to delete foreign key references in child tables upon delete in the parent table:
 
@@ -113,5 +115,6 @@ To change this behavior use this:
 	List<PersonRelative> relatives;
 	
 	the cascade value instructs Hibernate to perform deletion in children tables also.
-
+	
+	It can also be done by using orphanRemoval = true in the @OneToMany annotation.
 
