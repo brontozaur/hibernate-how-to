@@ -1,0 +1,101 @@
+How to use hibernate annotations
+---------------------------------------
+
+1. Primary key, auto-increment:
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "PersonJob_idPersonJob", unique = true)
+	private long idPersonJob;
+
+No setter is required.
+
+2. Skip some bean properties from creating a database table column:
+
+	@Transient
+	public final static String DEFAULT_CURRENCY = "EUR";
+	
+3. Get the parent of an 1-n relationship in the child bean (e.g. get Factura object from FacturaArticol bean):
+
+In FacturaArticol declare this:
+
+	@ManyToOne
+	@JoinColumn(name = "idFactura") //table column in factura_articole table
+	private Factura factura;
+
+4. Creates/updates but NO RESET on database schema at startup:
+
+Use this in hibernate.cfg.xml
+
+<property name="hibernate.hbm2ddl.auto">update</property>
+
+5. Declares an entity bean (used for ORM):
+
+@Entity
+@Table(name = "hibernate_person")
+public class Person {
+.....
+
+6. Declares a named query:
+
+@Entity
+@Table(name = "hibernate_person")
+@NamedQueries({
+		@NamedQuery(name = QueryMappings.GET_ALL_PERSONS, query = "from Person"), 
+		@NamedQuery(name = QueryMappings.GET_PERSON_BY_ID, query = "from Person WHERE id = :personId") })
+public class Person {
+
+where QueryMappings.GET_ALL_PERSONS = some_unique_string, used to extract the query afterwards.
+Pay attention that the object CLASS is used to query from the object class (e.g. Person) instead of the declared table_name (e.g. hibernate_person).
+
+7. How to use a declared named query:
+
+		Query q = HibernateUtil.getQuery(QueryMappings.GET_PERSON_BY_ID);
+		q.setParameter("personId", 1); //personId is the :personId parameter and NOT the id value after WHERE clause. This can be any string, as long as it is referenced with the same value when the 
+		// .setParameter() method is called.
+		Person p = (Person) q.list().get(0);
+
+		OR:
+		
+		Query q = getSessionFactory().openSession().getQuery(QueryMappings.GET_PERSON_BY_ID);
+		q.setParameter("personId", 1);
+		Person p = (Person) q.list().get(0);
+
+8. Get the list of childs of a parent, in an 1-n relationship (e.g. getFacturaArticoleList() for Factura bean):
+
+In Factura bean declare:
+
+(Solution1)
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = FacturaArticole.class)
+	@JoinColumn(name = "idFactura") //table column in factura_articole table
+	List<FacturaArticole> articoleList;
+	
+	equivalent with:
+	
+(Solution2)	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "facturaXXX")
+	List<FacturaArticole> articoleList;
+	
+	where <facturaXXX> is a FacturaArticol property, declared as:
+	
+	@ManyToOne
+	@JoinColumn(name = "factura_id") //column from Factura bean
+	private Factura facturaXXX;
+	
+	Warning: if private Factura facturaXXX; is changed to private Factura facturaYYY;, then the:
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "facturaXXX") will NOT work anymore.
+	
+	I think it will be more safely to rely on the column name rather than on the field name, therefore (Solution1) would be a prime candidate.
+
+9. TODO: to declare static constants for table columns used in foreign keys, for a better understanding of the annotations.
+10. Useful net resources:
+http://www.sauronsoftware.it/projects/cron4j/manual.php?PHPSESSID=q8od5b8l5v99jikke9o04kpd77
+http://www.laliluna.de/articles/java-persistence-hibernate/first-hibernate-example-tutorial.html
+http://viralpatel.net/blogs/hibernate-one-to-many-annotation-tutorial/
+http://docs.jboss.org/hibernate/orm/3.3/reference/en/html/tutorial.html
+http://stackoverflow.com/questions/9954590/hibernate-error-querysyntaxexception-users-is-not-mapped-from-users
+http://www.tutorialspoint.com/hibernate/hibernate_mapping_types.htm
+http://stackoverflow.com/questions/1654467/springhibernate-mapping-class-without-xml
+
+
