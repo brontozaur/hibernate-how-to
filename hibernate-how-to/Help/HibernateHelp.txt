@@ -97,5 +97,21 @@ http://docs.jboss.org/hibernate/orm/3.3/reference/en/html/tutorial.html
 http://stackoverflow.com/questions/9954590/hibernate-error-querysyntaxexception-users-is-not-mapped-from-users
 http://www.tutorialspoint.com/hibernate/hibernate_mapping_types.htm
 http://stackoverflow.com/questions/1654467/springhibernate-mapping-class-without-xml
+http://stackoverflow.com/questions/3746047/hibernate-how-to-delete-child-records-instead-of-setting-foreign-key-to-null
+http://www.mkyong.com/hibernate/hibernate-save-image-into-database/
+http://stackoverflow.com/questions/4253512/creating-16-or-32-bit-image-from-byte-array
+http://www.java2s.com/Tutorial/Java/0280__SWT/CreateImagefrombytearray.htm
+http://ndpsoftware.com/HibernateMappingCheatSheet.html
+
+11. How to delete foreign key references in child tables upon delete in the parent table:
+
+Hibernate by default sets the FK value to NULL in child tables when deleting a parent.
+To change this behavior use this:
+
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonRelative.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = BeanSQLMappings.PERSON_RELATIVE_COLUMN_PERSON_ID)
+	List<PersonRelative> relatives;
+	
+	the cascade value instructs Hibernate to perform deletion in children tables also.
 
 

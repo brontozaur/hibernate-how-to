@@ -66,9 +66,18 @@ public class Person {
 	@Column(name = "serverTimestamp")
 	private Timestamp serverTimestamp;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonJob.class)
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name = "image", length = 10_000_000)
+	private byte[] image;
+
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonJob.class, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = BeanSQLMappings.PERSON_JOB_COLUMN_PERSON_ID)
 	List<PersonJob> jobs;
+
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonRelative.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = BeanSQLMappings.PERSON_RELATIVE_COLUMN_PERSON_ID)
+	List<PersonRelative> relatives;
 
 	@Transient
 	private String strNumeUser;
@@ -211,5 +220,17 @@ public class Person {
 
 	public List<PersonJob> getJobs() {
 		return jobs;
+	}
+
+	public List<PersonRelative> getRelatives() {
+		return relatives;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 }

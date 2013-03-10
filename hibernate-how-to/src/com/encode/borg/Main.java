@@ -1,5 +1,6 @@
 package com.encode.borg;
 
+import java.io.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,32 +18,62 @@ public class Main {
 
 		// generateUserData();
 
+		// deleteUserWithId(1);
+
 		List<Person> persons = listPersons();
 		for (Person person : persons) {
-			System.err.println(person.getPrenume() + ", " + person.getNume());
+			System.err.println("----------------------------Jobs for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
 			for (PersonJob pj : person.getJobs()) {
 				System.err.println(pj.getNumeJob() + ", salary: " + pj.getSalary() + " " + pj.getCurrency());
+			}
+			System.err.println("----------------------------Relatives for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
+			for (PersonRelative pr : person.getRelatives()) {
+				System.err.println(pr.getNumeGradRudenie());
 			}
 		}
 
 		// test();
 	}
 
+	private static void deleteUserWithId(long id) {
+		try {
+			Session session = HibernateUtil.getSession();
+			Query q = session.getNamedQuery(QueryMappings.GET_PERSON_BY_ID);
+			q.setParameter("x", id);
+			Person p = (Person) q.list().get(0);
+
+			session.beginTransaction();
+			session.delete(p);
+			session.getTransaction().commit();
+		}
+		catch (HibernateException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+	}
+
 	private static void generateUserData() {
 		createPerson("Popa", "Mihaela");
 		createPerson("Popa", "Octavian");
 
-		Query q = HibernateUtil.getQuery(QueryMappings.GET_PERSON_BY_ID);
+		Query q = HibernateUtil.getQuery(HibernateUtil.getSession(), QueryMappings.GET_PERSON_BY_ID);
 		q.setParameter("x", 1);
 		Person p = (Person) q.list().get(0);
 		createPersonJob("casnica", 100, p);
 		createPersonJob("sotie", 200, p);
 		createPersonJob("mamica", 150, p);
 
+		createPersonRelative("varu Nelutu", p);
+		createPersonRelative("mama Maria", p);
+		createPersonRelative("verisoara Raluca", p);
+
 		q.setParameter("x", 2);
 		p = (Person) q.list().get(0);
 		createPersonJob("programator", 1500, p);
 		createPersonJob("cititor", 10, p);
+
+		createPersonRelative("nepotul Mihai", p);
+		createPersonRelative("varul Marius", p);
 	}
 
 	private static void createPersonJob(String nume, int salary, Person p) {
@@ -62,6 +93,21 @@ public class Main {
 		}
 	}
 
+	private static void createPersonRelative(String nume, Person p) {
+		try {
+			PersonRelative pr = new PersonRelative();
+			pr.setNumeGradRudenie(nume);
+			pr.setPerson(p);
+			Session session = HibernateUtil.getSession();
+			session.beginTransaction();
+			session.save(pr);
+			session.getTransaction().commit();
+		}
+		catch (HibernateException ex) {
+			ex.printStackTrace();
+		}
+	}
+
 	private static void createPerson(String nume, String prenume) {
 		try {
 			Person p = new Person();
@@ -69,6 +115,33 @@ public class Main {
 			p.setNume(nume);
 			p.setPrenume(prenume);
 			Session session = HibernateUtil.getSession();
+
+			// loads an image into person
+			File file = new File("d:\\borg.png");
+			byte[] bFile = new byte[(int) file.length()];
+			BufferedInputStream buff = null;
+			try {
+				buff = new BufferedInputStream(new FileInputStream(file));
+				// convert file into array of bytes
+				buff.read(bFile);
+				buff.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+			finally {
+				if (buff != null) {
+					try {
+						buff.close();
+					}
+					catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+
+			p.setImage(bFile);
+
 			session.beginTransaction();
 			session.save(p);
 			session.getTransaction().commit();
@@ -118,7 +191,7 @@ public class Main {
 		try {
 			Session session = HibernateUtil.getSession();
 
-			List<Person> persons = HibernateUtil.getQuery(QueryMappings.GET_ALL_PERSONS).list();
+			List<Person> persons = HibernateUtil.getQuery(session, QueryMappings.GET_ALL_PERSONS).list();
 			session.close();
 			return persons;
 		}
