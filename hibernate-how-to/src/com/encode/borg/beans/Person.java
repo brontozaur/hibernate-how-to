@@ -71,11 +71,11 @@ public class Person {
 	@Column(name = "image", length = 10_000_000)
 	private byte[] image;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonJob.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonJob.class, orphanRemoval = true)
 	@JoinColumn(name = BeanSQLMappings.PERSON_JOB_COLUMN_PERSON_ID)
 	List<PersonJob> jobs;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonRelative.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonRelative.class, orphanRemoval = true)
 	@JoinColumn(name = BeanSQLMappings.PERSON_RELATIVE_COLUMN_PERSON_ID)
 	List<PersonRelative> relatives;
 
