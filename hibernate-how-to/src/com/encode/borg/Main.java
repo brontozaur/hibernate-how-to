@@ -22,7 +22,7 @@ public class Main {
 	private static void printUserData() {
 		Session session = null;
 		try {
-			session = HibernateUtil.getSession();
+			session = HibernateUtil.openSession();
 		List<Person> persons = listPersons(session);
 		for (Person person : persons) {
 			System.err.println("----------------------------Jobs for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
@@ -43,7 +43,7 @@ public class Main {
 	private static void deleteUserWithId(long id) {
 		Session session = null;
 		try {
-			session = HibernateUtil.getSession();
+			session = HibernateUtil.openSession();
 			Person p = (Person) session.get(Person.class, id);
 			session.beginTransaction();
 			session.delete(p);
@@ -60,7 +60,7 @@ public class Main {
 	private static void generateUserData() {
 		Session session = null;
 		try {
-			session = HibernateUtil.getSession();
+			session = HibernateUtil.openSession();
 			session.beginTransaction();
 			createPerson("Popa", "Mihaela", session);
 			createPerson("Popa", "Octavian", session);

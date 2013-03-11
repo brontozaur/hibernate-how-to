@@ -104,6 +104,8 @@ http://www.java2s.com/Tutorial/Java/0280__SWT/CreateImagefrombytearray.htm
 http://ndpsoftware.com/HibernateMappingCheatSheet.html
 https://community.jboss.org/wiki/Non-transactionaldataaccessandtheauto-commitmode
 https://community.jboss.org/wiki/OpenSessionInView
+http://svn.constellio.com/constellio-connector-http/trunk/source/java/META-INF/persistence.xml
+http://jonathanhui.com/hibernate-java-persistence-api-jpa-0
 
 11. How to delete foreign key references in child tables upon delete in the parent table:
 
