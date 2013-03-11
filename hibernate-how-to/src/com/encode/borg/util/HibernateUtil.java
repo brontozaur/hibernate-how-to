@@ -1,6 +1,9 @@
 package com.encode.borg.util;
 
-import org.hibernate.*;
+import javax.persistence.*;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
@@ -23,15 +26,25 @@ public class HibernateUtil {
 		}
 	}
 
+	private static EntityManager buildSessionFactoryUsingPersistence() {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("BORG");
+		EntityManager em = emf.createEntityManager();
+		return em;
+	}
+
 	private static SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
-	public static Session getSession() {
+	public static Session openSession() {
 		return getSessionFactory().openSession();
 	}
 
-	public static Query getQuery(Session session, String queryName) {
+	public static Session getCurrentSession() {
+		return getSessionFactory().getCurrentSession();
+	}
+
+	public static org.hibernate.Query getQuery(Session session, String queryName) {
 		return session.getNamedQuery(queryName);
 	}
 
