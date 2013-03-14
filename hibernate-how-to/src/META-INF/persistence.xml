@@ -5,19 +5,39 @@
              version="2.0">
     <persistence-unit name="BORG" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-<!--		<jta-data-source>java:/DefaultDS</jta-data-source> NOT USED-->
 		<class>com.encode.borg.beans.Person</class>
 		<class>com.encode.borg.beans.PersonJob</class>
 		<class>com.encode.borg.beans.PersonRelative</class>
         <properties>
-<!--            <property name="hibernate.ejb.cfgfile" value="/hibernate.cfg.xml"/> -->
 			<property name="javax.persistence.shared.cache.mode" value="ENABLE_SELECTIVE"/>
-			<property name="javax.persistence.validation.mode" value="CALLBACK"/>
-			<property name="hibernate.connection.isolation" value="TRANSACTION_READ_UNCOMMITTED" />
+			<property name="hibernate.connection.isolation" value="1" />
 			<property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost/borg_hibernate" />
+            <property name="hibernate.connection.username" value="root" />
+            <property name="hibernate.connection.password" value="thematrix" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.c3p0.min_size" value="5" />
+            <property name="hibernate.c3p0.max_size" value="20" />
+            <property name="hibernate.c3p0.timeout" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="50" />
+            <property name="hibernate.c3p0.idle_test_period" value="3000" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="ENCODE" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.encode.borg.beans.Person</class>
+		<class>com.encode.borg.beans.PersonJob</class>
+		<class>com.encode.borg.beans.PersonRelative</class>
+        <properties>
+			<property name="javax.persistence.shared.cache.mode" value="ENABLE_SELECTIVE"/>
+			<property name="hibernate.connection.isolation" value="1" />
+			<property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost/encode_hibernate" />
             <property name="hibernate.connection.username" value="root" />
             <property name="hibernate.connection.password" value="thematrix" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
