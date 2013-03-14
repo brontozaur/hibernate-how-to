@@ -5,11 +5,14 @@ import java.sql.Date;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.jboss.logging.Logger;
 
 import com.encode.borg.beans.*;
 import com.encode.borg.util.HibernateUtil;
 
 public class Main {
+
+	private static Logger logger = Logger.getLogger(Main.class);
 
 	public static void main(String[] args) {
 		generateUserData();
@@ -25,13 +28,13 @@ public class Main {
 			session = HibernateUtil.openSession();
 		List<Person> persons = listPersons(session);
 		for (Person person : persons) {
-			System.err.println("----------------------------Jobs for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
+				logger.info("----------------------------Jobs for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
 			for (PersonJob pj : person.getJobs()) {
-				System.err.println(pj.getNumeJob() + ", salary: " + pj.getSalary() + " " + pj.getCurrency());
+					logger.info(pj.getNumeJob() + ", salary: " + pj.getSalary() + " " + pj.getCurrency());
 			}
-			System.err.println("----------------------------Relatives for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
+				logger.info("----------------------------Relatives for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
 			for (PersonRelative pr : person.getRelatives()) {
-				System.err.println(pr.getNumeGradRudenie());
+					logger.info(pr.getNumeGradRudenie());
 			}
 		}
 		}finally {

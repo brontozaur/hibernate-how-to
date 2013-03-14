@@ -17,6 +17,8 @@ public class MainWithPersistenceXML {
 
 		deleteUserWithId(1);
 		printUserData();
+
+		PersistenceUtil.closeAllFactories();
 	}
 
 	private static void printUserData() {

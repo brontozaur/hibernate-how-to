@@ -5,10 +5,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
+import org.jboss.logging.Logger;
 
 public class HibernateUtil {
 
 	private static final SessionFactory sessionFactory = buildSessionFactory();
+	private static Logger logger = Logger.getLogger(HibernateUtil.class);
 
 	private static SessionFactory buildSessionFactory() {
 		try {
@@ -19,7 +21,7 @@ public class HibernateUtil {
 			return config.buildSessionFactory(serviceRegistry);
 		}
 		catch (Throwable ex) {
-			System.err.println("Initial SessionFactory creation failed." + ex);
+			logger.error("buildSessionFactory() error" + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
