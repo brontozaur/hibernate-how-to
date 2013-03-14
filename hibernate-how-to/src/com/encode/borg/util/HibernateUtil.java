@@ -1,7 +1,5 @@
 package com.encode.borg.util;
 
-import javax.persistence.*;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -24,12 +22,6 @@ public class HibernateUtil {
 			System.err.println("Initial SessionFactory creation failed." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
-	}
-
-	private static EntityManager buildSessionFactoryUsingPersistence() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("BORG");
-		EntityManager em = emf.createEntityManager();
-		return em;
 	}
 
 	private static SessionFactory getSessionFactory() {
