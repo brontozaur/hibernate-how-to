@@ -107,6 +107,8 @@ https://community.jboss.org/wiki/OpenSessionInView
 http://svn.constellio.com/constellio-connector-http/trunk/source/java/META-INF/persistence.xml
 http://jonathanhui.com/hibernate-java-persistence-api-jpa-0
 http://s3-eu-west-1.amazonaws.com/presentations2012/50_presentation.pdf
+http://www.objectdb.com/java/jpa/persistence/delete
+http://docs.jboss.org/ejb3/app-server/HibernateEntityManager/reference/en/html_single/index.html - automanaged context for ejb3
 
 JDO vs JPA vs DataNucleus vs Hibernate facts
 1. First, there was JDO, working with RDBMS and nonRDBMS database

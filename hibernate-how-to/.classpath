@@ -2,7 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate-release-4.2.0.CR2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mysql-connector-java-5.1.5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate-core-and-deps"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate-c3p0-4.2.0.CR2"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate-entitymanager-4.2.0.CR2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
