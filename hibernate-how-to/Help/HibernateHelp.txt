@@ -110,6 +110,10 @@ http://s3-eu-west-1.amazonaws.com/presentations2012/50_presentation.pdf
 http://www.objectdb.com/java/jpa/persistence/delete
 http://docs.jboss.org/ejb3/app-server/HibernateEntityManager/reference/en/html_single/index.html - automanaged context for ejb3
 http://stackoverflow.com/questions/3739387/javax-persistence-persistenceexception-no-persistence-provider-for-entitymanage
+http://www.objectdb.com/java/jpa/persistence/managed
+http://blog.eyallupu.com/2010/06/hibernate-exception-simultaneously.html
+http://www.objectdb.com/java/jpa/persistence/retrieve
+http://www.jpab.org/Hibernate.html
 
 JDO vs JPA vs DataNucleus vs Hibernate facts
 1. First, there was JDO, working with RDBMS and nonRDBMS database
@@ -135,3 +139,54 @@ To change this behavior use this:
 	
 	It can also be done by using orphanRemoval = true in the @OneToMany annotation.
 
+12. Using fetch = FetchType.LAZY, might create a HOLLOW object (e.g. an empty object, having set only 1 property - the primary key). When other properties are needed, they are activated
+(readed) from the db and managed. Now the hollow object becomes a fully initialized object.
+
+13. The FetchingType.LAZY greately improves performance, but there are case when hollow objects are not acceptable. (e.g. activating them one-by-one afterwards makes multiple selects, and therefore
+performance decreases). This fetching type might be then changed to FetchType.EAGER, which aggresively (and fully) initializes the objects. Howver, using multiple lists in the same object,
+with EAGER fetching type will lead to errors, due to some bug in Hibernate. For instance:
+
+ - having the Person bean, with properties:
+ 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "personx", fetch = FetchType.EAGER)
+	List<PersonJob> jobs;
+
+	and 
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "person", fetch = FetchType.EAGER)
+	List<PersonRelative> relatives;
+	
+	leads to multiple bags exception. This can be overcome by:
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "personx", fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SUBSELECT)
+	List<PersonJob> jobs;
+	
+	OR (using a Set instead of List - however, sets does not guarantee order - so, use it as needed)
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "personx", fetch = FetchType.EAGER)
+	Set<PersonJob> jobs;
+	
+	See also http://www.objectdb.com/java/jpa/persistence/retrieve.
+
+14. Cache L2. JPA cache usefull scenarios are:
+	a. In persistence.xml, define: <property name="javax.persistence.shared.cache.mode" value="ALL"/>
+	b. A smarter setting is: <property name="javax.persistence.shared.cache.mode" value="ENABLE_SELECTIVE"/> in conjuction with @Cacheable (or @Cacheable(true))
+		annotation which marks the targeted entity as cacheable. DISABLE_SELECTIVE caching policy assumes by default that all items are cached, except those marked
+		as disabled.
+	c. Cache can be accessed and an object tested if cached as: 
+	
+		EntityManager em = ...;
+		Cache cache = em.getEntityManagerFactory().getCache();
+		String personPK = ...;
+		if (cache.contains(Person.class, personPK)) {
+		  // the data is cached
+		} else {
+		  // the data is NOT cached
+		}
+		
+		About cache: http://docs.oracle.com/javaee/6/tutorial/doc/gkjjj.html
+		Use evict(..) and evictAll(..) to remove objects from cache.
+
+15. Hibernate dialects benchmarks:
+	http://www.jpab.org/Hibernate.html

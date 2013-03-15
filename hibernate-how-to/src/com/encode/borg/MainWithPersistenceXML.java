@@ -7,7 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import com.encode.borg.beans.*;
-import com.encode.borg.util.PersistenceUtil;
+import com.encode.borg.util.BorgPersistence;
 
 public class MainWithPersistenceXML {
 
@@ -18,13 +18,13 @@ public class MainWithPersistenceXML {
 		deleteUserWithId(1);
 		printUserData();
 
-		PersistenceUtil.closeAllFactories();
+		BorgPersistence.closeAllFactories();
 	}
 
 	private static void printUserData() {
 		EntityManager manager = null;
 		try {
-			manager = PersistenceUtil.getEntityManager();
+			manager = BorgPersistence.getEntityManager();
 			List<Person> persons = listPersons(manager);
 			for (Person person : persons) {
 				System.err.println("----------------------------Jobs for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
@@ -46,7 +46,7 @@ public class MainWithPersistenceXML {
 	private static void deleteUserWithId(long id) {
 		EntityManager manager = null;
 		try {
-			manager = PersistenceUtil.getEntityManager();
+			manager = BorgPersistence.getEntityManager();
 			manager.getTransaction().begin();
 			Person p = manager.find(Person.class, id);
 			manager.getTransaction();
@@ -65,7 +65,7 @@ public class MainWithPersistenceXML {
 	private static void generateUserData() {
 		EntityManager manager = null;
 		try {
-			manager = PersistenceUtil.getEntityManager();
+			manager = BorgPersistence.getEntityManager();
 			manager.getTransaction().begin();
 			createPerson("Popa", "Mihaela", manager);
 			createPerson("Popa", "Octavian", manager);

@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import com.encode.borg.BeanSQLMappings;
 
+@Cacheable
 @Entity
 @Table(name = BeanSQLMappings.PERSON_JOB_TABLE_NAME)
 public class PersonJob {
@@ -25,8 +26,6 @@ public class PersonJob {
 	@Column(name = "currency", precision = 2)
 	private String currency;
 
-	// extract the whole Person object, based on the mappings bellow.
-	// Person column (personId) is related 1-n to PersonJob column (idPerson).
 	@ManyToOne
 	@JoinColumn(name = BeanSQLMappings.PERSON_JOB_COLUMN_PERSON_ID, nullable = false)
 	private Person personx;

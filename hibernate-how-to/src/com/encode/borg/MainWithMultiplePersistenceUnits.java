@@ -7,19 +7,19 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import com.encode.borg.beans.*;
-import com.encode.borg.util.PersistenceUtil;
+import com.encode.borg.util.BorgPersistence;
 
 public class MainWithMultiplePersistenceUnits {
 
 	public static void main(String[] args) {
-		System.err.println("---------------operations using " + PersistenceUtil.DEFAULT_PERSISTENCE_UNIT + " using borg_hibernate db persistence unit START------------------------------------\n");
-		processPU(PersistenceUtil.DEFAULT_PERSISTENCE_UNIT);
-		System.err.println("---------------operations using " + PersistenceUtil.DEFAULT_PERSISTENCE_UNIT + " using borg_hibernate db persistence unit END------------------------------------\n");
-		System.err.println("---------------operations using " + PersistenceUtil.ENCODE_PERSISTENCE_UNIT + " using encode_hibernate persistence unit START------------------------------------\n");
-		processPU(PersistenceUtil.ENCODE_PERSISTENCE_UNIT);
-		System.err.println("---------------operations using " + PersistenceUtil.ENCODE_PERSISTENCE_UNIT + " using encode_hibernate persistence unit END------------------------------------\n");
+		System.err.println("---------------operations using " + BorgPersistence.DEFAULT_PERSISTENCE_UNIT + " using borg_hibernate db persistence unit START------------------------------------\n");
+		processPU(BorgPersistence.DEFAULT_PERSISTENCE_UNIT);
+		System.err.println("---------------operations using " + BorgPersistence.DEFAULT_PERSISTENCE_UNIT + " using borg_hibernate db persistence unit END------------------------------------\n");
+		System.err.println("---------------operations using " + BorgPersistence.ENCODE_PERSISTENCE_UNIT + " using encode_hibernate persistence unit START------------------------------------\n");
+		processPU(BorgPersistence.ENCODE_PERSISTENCE_UNIT);
+		System.err.println("---------------operations using " + BorgPersistence.ENCODE_PERSISTENCE_UNIT + " using encode_hibernate persistence unit END------------------------------------\n");
 
-		PersistenceUtil.closeAllFactories();
+		BorgPersistence.closeAllFactories();
 	}
 
 	private static void processPU(String persistenceUnitName) {
@@ -33,7 +33,7 @@ public class MainWithMultiplePersistenceUnits {
 	private static void printUserData(String puName) {
 		EntityManager manager = null;
 		try {
-			manager = PersistenceUtil.getEntityManager(puName);
+			manager = BorgPersistence.getEntityManager(puName);
 			List<Person> persons = listPersons(manager);
 			for (Person person : persons) {
 				System.err.println("----------------------------Jobs for user: " + person.getPrenume() + ", " + person.getNume() + "-----------------------------------");
@@ -55,16 +55,18 @@ public class MainWithMultiplePersistenceUnits {
 	private static void deleteUserWithId(long id, String puName) {
 		EntityManager manager = null;
 		try {
-			manager = PersistenceUtil.getEntityManager(puName);
+			manager = BorgPersistence.getEntityManager(puName);
 			manager.getTransaction().begin();
-			Person p = manager.find(Person.class, id);
-			manager.getTransaction();
+			Person p = manager.getReference(Person.class, id);
+			System.err.println(p.getNume() + " has id: " + p.getIdUser());
 			manager.remove(p);
 			manager.getTransaction().commit();
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-			manager.getTransaction().rollback();
+			if (manager.getTransaction().isActive()) {
+				manager.getTransaction().rollback();
+			}
 		}
 		finally {
 			manager.close();
@@ -74,14 +76,14 @@ public class MainWithMultiplePersistenceUnits {
 	private static void generateUserData(String puName) {
 		EntityManager manager = null;
 		try {
-			manager = PersistenceUtil.getEntityManager(puName);
+			manager = BorgPersistence.getEntityManager(puName);
 			manager.getTransaction().begin();
 
-			if (PersistenceUtil.DEFAULT_PERSISTENCE_UNIT.equals(puName)) {
-			createPerson("Popa", "Mihaela", manager);
-			createPerson("Popa", "Octavian", manager);
+			if (BorgPersistence.DEFAULT_PERSISTENCE_UNIT.equals(puName)) {
+				createPerson("Popa", "Mihaela", puName);
+				createPerson("Popa", "Octavian", puName);
 
-			Person p = manager.find(Person.class, 1L);
+				Person p = manager.getReference(Person.class, 1L);
 			createPersonJob("casnica", 100, p, manager);
 			createPersonJob("sotie", 200, p, manager);
 			createPersonJob("mamica", 150, p, manager);
@@ -90,17 +92,17 @@ public class MainWithMultiplePersistenceUnits {
 			createPersonRelative("mama Maria", p, manager);
 			createPersonRelative("verisoara Raluca", p, manager);
 
-			p = manager.find(Person.class, 2L);
+				p = manager.getReference(Person.class, 2L);
 			createPersonJob("programator", 1500, p, manager);
 			createPersonJob("cititor", 10, p, manager);
 
 			createPersonRelative("nepotul Mihai", p, manager);
 			createPersonRelative("varul Marius", p, manager);
 			} else {
-				createPerson("Robert", "de Niro", manager);
-				createPerson("Tom", "Schneider", manager);
+				createPerson("Robert", "de Niro", puName);
+				createPerson("Tom", "Schneider", puName);
 
-				Person p = manager.find(Person.class, 1L);
+				Person p = manager.getReference(Person.class, 1L);
 				createPersonJob("actor", 100, p, manager);
 				createPersonJob("regizor", 200, p, manager);
 				createPersonJob("scenarist", 150, p, manager);
@@ -109,7 +111,7 @@ public class MainWithMultiplePersistenceUnits {
 				createPersonRelative("uncle John", p, manager);
 				createPersonRelative("cousin Maria", p, manager);
 
-				p = manager.find(Person.class, 2L);
+				p = manager.getReference(Person.class, 2L);
 				createPersonJob("sql patcher", 1500, p, manager);
 				createPersonJob("sluga lui Dietmar", 10, p, manager);
 
@@ -119,7 +121,9 @@ public class MainWithMultiplePersistenceUnits {
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-			manager.getTransaction().rollback();
+			if (manager.getTransaction().isActive()) {
+				manager.getTransaction().rollback();
+			}
 		}
 		finally {
 			manager.close();
@@ -142,7 +146,11 @@ public class MainWithMultiplePersistenceUnits {
 		manager.persist(pr);
 	}
 
-	private static void createPerson(String nume, String prenume, EntityManager manager) {
+	private static void createPerson(String nume, String prenume, String puName) {
+		EntityManager manager = null;
+		try {
+			manager = BorgPersistence.getEntityManager(puName);
+			manager.getTransaction().begin();
 		Person p = new Person();
 		p.setActiv(true);
 		p.setNume(nume);
@@ -181,6 +189,17 @@ public class MainWithMultiplePersistenceUnits {
 		p.setImage(bFile);
 
 		manager.persist(p);
+			manager.getTransaction().commit();
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			if (manager.getTransaction().isActive()) {
+				manager.getTransaction().rollback();
+			}
+		}
+		finally {
+			manager.close();
+		}
 	}
 
 	private static List<Person> listPersons(EntityManager manager) {
