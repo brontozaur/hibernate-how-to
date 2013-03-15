@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import com.encode.borg.BeanSQLMappings;
 
+@Cacheable
 @Entity
 @Table(name = BeanSQLMappings.PERSON_RELATIVE_TABLE_NAME)
 public class PersonRelative {

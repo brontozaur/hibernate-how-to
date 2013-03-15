@@ -6,9 +6,13 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.encode.borg.BeanSQLMappings;
 import com.encode.borg.QueryMappings;
 
+@Cacheable
 @Entity
 @Table(name = BeanSQLMappings.PERSON_TABLE_NAME)
 @NamedQueries({
@@ -67,16 +71,15 @@ public class Person {
 	private Timestamp serverTimestamp;
 
 	@Lob
-	@Basic(fetch = FetchType.LAZY)
 	@Column(name = "image", length = 10_000_000)
 	private byte[] image;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonJob.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = BeanSQLMappings.PERSON_JOB_COLUMN_PERSON_ID)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "personx", fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SUBSELECT)
 	List<PersonJob> jobs;
 
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = PersonRelative.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = BeanSQLMappings.PERSON_RELATIVE_COLUMN_PERSON_ID)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "person", fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SUBSELECT)
 	List<PersonRelative> relatives;
 
 	@Transient

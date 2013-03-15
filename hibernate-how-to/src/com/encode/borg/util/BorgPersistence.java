@@ -6,12 +6,12 @@ import javax.persistence.*;
 
 import org.jboss.logging.Logger;
 
-public class PersistenceUtil {
+public class BorgPersistence {
 
 	private static Map<String, EntityManagerFactory> factories = new HashMap<String, EntityManagerFactory>();
 	public static String DEFAULT_PERSISTENCE_UNIT = "BORG";
 	public static String ENCODE_PERSISTENCE_UNIT = "ENCODE";
-	private static Logger logger = Logger.getLogger(PersistenceUtil.class);
+	private static Logger logger = Logger.getLogger(BorgPersistence.class);
 
 	public static EntityManagerFactory getEntityManagerFactory(String persistenceUnitName) {
 		logger.info("requested EntityManagerFactory with persistence unit name: " + persistenceUnitName);
@@ -62,4 +62,15 @@ public class PersistenceUtil {
 		logger.info("all factories were successfully closed.");
 	}
 
+	public static boolean isLoaded(Object object) {
+		return Persistence.getPersistenceUtil().isLoaded(object);
+	}
+
+	public static boolean isFieldLoaded(Object object, String fieldName) {
+		return Persistence.getPersistenceUtil().isLoaded(object, fieldName);
+	}
+
+	public static void reloadObject(EntityManager manager, Object entity) throws EntityNotFoundException {
+		manager.refresh(entity);
+	}
 }

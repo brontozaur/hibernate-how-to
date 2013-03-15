@@ -4,15 +4,22 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
     <persistence-unit name="BORG" transaction-type="RESOURCE_LOCAL">
+    	<description>Testing unit#1</description>
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<!--This can be used to specify a jar file containing the addnotated beans! So, there is no need to declare all beans manually, as seen bellow  -->
+		<!-- <jar-file>packedEntity.jar</jar-file> -->
 		<class>com.encode.borg.beans.Person</class>
 		<class>com.encode.borg.beans.PersonJob</class>
 		<class>com.encode.borg.beans.PersonRelative</class>
+		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
-			<property name="javax.persistence.shared.cache.mode" value="ENABLE_SELECTIVE"/>
+			<!-- <property name="javax.persistence.cache.retrieveMode" value="CacheRetrieveMode.USE"/> -->
+			<!-- <property name="javax.persistence.cache.storeMode" value="CacheStoreMode.REFRESH"/> -->
+			<property name="hibernate.cache.use_second_level_cache" value="true"/>
 			<property name="hibernate.connection.isolation" value="1" />
 			<property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value = "true" />
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost/borg_hibernate" />
             <property name="hibernate.connection.username" value="root" />
@@ -27,15 +34,20 @@
         </properties>
     </persistence-unit>
     <persistence-unit name="ENCODE" transaction-type="RESOURCE_LOCAL">
+    	<description>Testing unit#1</description>
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>com.encode.borg.beans.Person</class>
 		<class>com.encode.borg.beans.PersonJob</class>
 		<class>com.encode.borg.beans.PersonRelative</class>
+		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
-			<property name="javax.persistence.shared.cache.mode" value="ENABLE_SELECTIVE"/>
+			<!-- <property name="javax.persistence.cache.retrieveMode" value="CacheRetrieveMode.USE"/> -->
+			<!-- <property name="javax.persistence.cache.storeMode" value="CacheStoreMode.REFRESH"/> -->
+			<property name="hibernate.cache.use_second_level_cache" value="true"/>
 			<property name="hibernate.connection.isolation" value="1" />
 			<property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value = "true" />
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost/encode_hibernate" />
             <property name="hibernate.connection.username" value="root" />
