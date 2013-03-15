@@ -28,7 +28,7 @@ public class PersonJob {
 	// extract the whole Person object, based on the mappings bellow.
 	// Person column (personId) is related 1-n to PersonJob column (idPerson).
 	@ManyToOne
-	@JoinColumn(name = BeanSQLMappings.PERSON_JOB_COLUMN_PERSON_ID)
+	@JoinColumn(name = BeanSQLMappings.PERSON_JOB_COLUMN_PERSON_ID, nullable = false)
 	private Person personx;
 
 	public String getNumeJob() {

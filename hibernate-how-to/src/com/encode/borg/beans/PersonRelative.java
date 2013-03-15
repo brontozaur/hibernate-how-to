@@ -17,7 +17,7 @@ public class PersonRelative {
 	private String numeGradRudenie;
 
 	@ManyToOne
-	@JoinColumn(name = BeanSQLMappings.PERSON_RELATIVE_COLUMN_PERSON_ID)
+	@JoinColumn(name = BeanSQLMappings.PERSON_RELATIVE_COLUMN_PERSON_ID, nullable = false)
 	private Person person;
 
 	public String getNumeGradRudenie() {
