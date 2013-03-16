@@ -15,11 +15,12 @@ public class Main {
 	private static Logger logger = Logger.getLogger(Main.class);
 
 	public static void main(String[] args) {
+		HibernateUtil.emptyDatabase();
 		generateUserData();
 		printUserData();
 
-		deleteUserWithId(1);
-		printUserData();
+		// deleteUserWithId(1);
+		// printUserData();
 	}
 
 	private static void printUserData() {
