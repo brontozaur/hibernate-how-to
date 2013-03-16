@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 import org.jboss.logging.Logger;
 
+import com.encode.borg.beans.*;
+
 public class BorgPersistence {
 
 	private static Map<String, EntityManagerFactory> factories = new HashMap<String, EntityManagerFactory>();
@@ -72,5 +74,28 @@ public class BorgPersistence {
 
 	public static void reloadObject(EntityManager manager, Object entity) throws EntityNotFoundException {
 		manager.refresh(entity);
+	}
+
+	public static void emptyDatabase(String persistenceUnitName) {
+		EntityManager em = null;
+		try {
+			em = getEntityManager(persistenceUnitName);
+			em.getTransaction().begin();
+			Query query = null;
+			query = em.createQuery("DELETE FROM " + PersonJob.class.getName());
+			query.executeUpdate();
+			query = em.createQuery("DELETE FROM " + PersonRelative.class.getName());
+			query.executeUpdate();
+			query = em.createQuery("DELETE FROM " + Person.class.getName());
+			query.executeUpdate();
+			em.getTransaction().commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			em.getTransaction().rollback();
+		}
+		finally {
+			em.close();
+		}
 	}
 }

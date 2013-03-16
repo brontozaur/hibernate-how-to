@@ -23,11 +23,13 @@ public class MainWithMultiplePersistenceUnits {
 	}
 
 	private static void processPU(String persistenceUnitName) {
+		BorgPersistence.emptyDatabase(persistenceUnitName);
+
 		generateUserData(persistenceUnitName);
 		printUserData(persistenceUnitName);
 
-		deleteUserWithId(1, persistenceUnitName);
-		printUserData(persistenceUnitName);
+		// deleteUserWithId(1, persistenceUnitName);
+		// printUserData(persistenceUnitName);
 	}
 
 	private static void printUserData(String puName) {

@@ -12,11 +12,12 @@ import com.encode.borg.util.BorgPersistence;
 public class MainWithPersistenceXML {
 
 	public static void main(String[] args) {
+		BorgPersistence.emptyDatabase(BorgPersistence.DEFAULT_PERSISTENCE_UNIT);
 		generateUserData();
 		printUserData();
 
-		deleteUserWithId(1);
-		printUserData();
+		// deleteUserWithId(1);
+		// printUserData();
 
 		BorgPersistence.closeAllFactories();
 	}

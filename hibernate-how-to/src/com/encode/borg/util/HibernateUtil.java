@@ -1,11 +1,12 @@
 package com.encode.borg.util;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 import org.jboss.logging.Logger;
+
+import com.encode.borg.beans.*;
 
 public class HibernateUtil {
 
@@ -48,6 +49,29 @@ public class HibernateUtil {
 
 	public static void prepareDatabase() {
 		getSessionFactory();
+	}
+
+	public static void emptyDatabase() {
+		Session session = null;
+		try {
+			session = HibernateUtil.openSession();
+			session.getTransaction().begin();
+			Query query = null;
+			query = session.createQuery("DELETE FROM " + PersonJob.class.getName());
+			query.executeUpdate();
+			query = session.createQuery("DELETE FROM " + PersonRelative.class.getName());
+			query.executeUpdate();
+			query = session.createQuery("DELETE FROM " + Person.class.getName());
+			query.executeUpdate();
+			session.getTransaction().commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}
+		finally {
+			session.close();
+		}
 	}
 
 }
